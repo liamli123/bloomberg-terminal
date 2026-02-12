@@ -1,4 +1,9 @@
-import { openai } from "@ai-sdk/openai";
+import { createOpenAI } from "@ai-sdk/openai";
+
+const deepseek = createOpenAI({
+  baseURL: "https://api.deepseek.com",
+  apiKey: process.env.DEEPSEEK_API_KEY,
+});
 import { streamText } from "ai";
 import { type CoreMessage, Message } from "ai";
 import { type NextRequest, NextResponse } from "next/server";
@@ -118,7 +123,7 @@ Never provide investment advice or make specific trading recommendations.`;
 
     // Use the AI SDK to stream text with strict limits
     const result = streamText({
-      model: openai("gpt-4"),
+      model: deepseek("deepseek-chat"),
       messages: messagesWithSystem,
       temperature: 0.7,
       maxTokens: 500, // Strict token limit
