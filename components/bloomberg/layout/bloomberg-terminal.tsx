@@ -23,10 +23,12 @@ import { TerminalFilterBar } from "../layout/terminal-filter-bar";
 import { TerminalHeader } from "../layout/terminal-header";
 import { TerminalLayout } from "../layout/terminal-layout";
 import type { FilterState, MarketItem } from "../types";
+import BuffettMungerBoardView from "../views/buffett-munger-board-view";
 import MarketMoversView from "../views/market-movers-view";
 import { MarketView } from "../views/market-view";
 import NewsView from "../views/news-view";
 import { RmiView } from "../views/rmi-view";
+import ValueInvestorValuationView from "../views/value-investor-valuation-view";
 import VolatilityView from "../views/volatility-view";
 
 export default function BloombergTerminal() {
@@ -45,6 +47,8 @@ export default function BloombergTerminal() {
     handleMoversView,
     handleVolatilityView,
     handleRmiView,
+    handleValuationView,
+    handleBuffettMungerView,
     handleCancelClick,
     handleNewClick,
     handleBlancClick,
@@ -182,6 +186,16 @@ export default function BloombergTerminal() {
       description: "Show volatility view",
     },
     {
+      key: "5",
+      action: handleValuationView,
+      description: "Show value investor valuation",
+    },
+    {
+      key: "6",
+      action: handleBuffettMungerView,
+      description: "Show Buffett/Munger board",
+    },
+    {
       key: "?",
       action: handleHelpClick,
       description: "Show keyboard shortcuts",
@@ -236,6 +250,34 @@ export default function BloombergTerminal() {
     );
   }
 
+  if (currentView === "valuation") {
+    return (
+      <TerminalLayout shortcuts={shortcuts}>
+        <ValueInvestorValuationView
+          isDarkMode={isDarkMode}
+          onBack={handleBackFromView}
+          marketData={data}
+          onRefresh={refreshData}
+          isLoading={isLoading}
+        />
+      </TerminalLayout>
+    );
+  }
+
+  if (currentView === "buffettMunger") {
+    return (
+      <TerminalLayout shortcuts={shortcuts}>
+        <BuffettMungerBoardView
+          isDarkMode={isDarkMode}
+          onBack={handleBackFromView}
+          marketData={data}
+          onRefresh={refreshData}
+          isLoading={isLoading}
+        />
+      </TerminalLayout>
+    );
+  }
+
   return (
     <TerminalLayout shortcuts={shortcuts}>
       <TerminalHeader
@@ -247,6 +289,8 @@ export default function BloombergTerminal() {
         onMoversClick={handleMoversView}
         onVolatilityClick={handleVolatilityView}
         onRmiClick={handleRmiView}
+        onValuationClick={handleValuationView}
+        onBuffettMungerClick={handleBuffettMungerView}
         onHelpClick={handleHelpClick}
         onThemeToggle={handleThemeToggle}
       />

@@ -24,4 +24,8 @@ export const queryKeys = {
     all: ["volatility"] as const,
     list: () => [...queryKeys.volatility.all, "list"] as const,
   },
+  tickerAnalysis: {
+    all: ["tickerAnalysis"] as const,
+    detail: (ticker: string) => [...queryKeys.tickerAnalysis.all, { ticker }] as const,
+  },
 };

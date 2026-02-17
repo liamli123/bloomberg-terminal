@@ -1,6 +1,6 @@
 import { marketData as fallbackData } from "@/components/bloomberg/lib/marketData";
 import type { MarketData, MarketItem } from "@/components/bloomberg/types";
-import { generateRandomSparkline } from "@/lib/alpha-vantage";
+import { generateRandomSparkline } from "@/lib/data-service";
 import refreshMarketData from "@/lib/market-data-refresh";
 import { redis } from "@/lib/redis";
 import { NextResponse } from "next/server";

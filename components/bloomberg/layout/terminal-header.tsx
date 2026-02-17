@@ -6,11 +6,13 @@ import {
   BarChart2,
   Database,
   HelpCircle,
+  LineChart,
   Moon,
   Newspaper,
   RefreshCw,
   Sun,
   TrendingUp,
+  Trophy,
   Wifi,
 } from "lucide-react";
 import { BloombergButton } from "../core/bloomberg-button";
@@ -26,6 +28,8 @@ type TerminalHeaderProps = {
   onMoversClick: () => void;
   onVolatilityClick: () => void;
   onRmiClick: () => void;
+  onValuationClick: () => void;
+  onBuffettMungerClick: () => void;
   onHelpClick: () => void;
   onThemeToggle: () => void;
 };
@@ -39,6 +43,8 @@ export function TerminalHeader({
   onMoversClick,
   onVolatilityClick,
   onRmiClick,
+  onValuationClick,
+  onBuffettMungerClick,
   onHelpClick,
   onThemeToggle,
 }: TerminalHeaderProps) {
@@ -110,6 +116,14 @@ export function TerminalHeader({
         <Activity className="h-3 w-3 mr-1" />
         RMI
       </BloombergButton>
+      <BloombergButton color="green" onClick={onValuationClick}>
+        <LineChart className="h-3 w-3 mr-1" />
+        VALUE
+      </BloombergButton>
+      <BloombergButton color="green" onClick={onBuffettMungerClick}>
+        <Trophy className="h-3 w-3 mr-1" />
+        BMGR
+      </BloombergButton>
 
       <BloombergButton color="accent" onClick={onHelpClick}>
         <HelpCircle className="h-3 w-3 mr-1" />
@@ -146,7 +160,11 @@ export function TerminalHeader({
             <AlertTriangle className="h-3 w-3 text-yellow-500" />
           )}
           <span className={isFromRedis ? "text-green-500" : "text-yellow-500"}>
-            {dataSource === "alpha-vantage" ? "API" : isFromRedis ? "Redis" : "Local"}
+            {dataSource === "multi-provider" || dataSource === "alpha-vantage"
+              ? "API"
+              : isFromRedis
+                ? "Redis"
+                : "Local"}
           </span>
           {getDataFreshnessIndicator()}
           {lastUpdated && <span className="text-gray-400">{lastUpdated.toLocaleTimeString()}</span>}

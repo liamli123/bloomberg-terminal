@@ -1,6 +1,5 @@
 "use client";
 
-import { fetchFinancialNews } from "@/lib/alpha-vantage";
 import { ArrowLeft, ExternalLink, RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { BloombergButton } from "../core/bloomberg-button";
@@ -37,9 +36,10 @@ export default function NewsView({ isDarkMode, onBack }: NewsViewProps) {
       try {
         setIsLoading(true);
         setError(null);
-        const newsData = await fetchFinancialNews(query);
-        if (newsData) {
-          setNews(newsData);
+        const response = await fetch(`/api/news?query=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        if (data.feed && data.feed.length > 0) {
+          setNews(data.feed);
         } else {
           setError("Could not fetch real news data. Showing sample news.");
         }
@@ -53,28 +53,7 @@ export default function NewsView({ isDarkMode, onBack }: NewsViewProps) {
   );
 
   const formatPublishedTime = (timeString: string) => {
-    // The Alpha Vantage API returns dates in YYYYMMDDTHHMMSS format.
-    // We need to parse this custom format, as new Date() cannot handle it directly.
-    const alphaVantageFormat = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})$/;
-    const match = timeString.match(alphaVantageFormat);
-    let date: Date;
-    if (match) {
-      // If it matches the Alpha Vantage format, parse it manually.
-      const [, year, month, day, hour, minute, second] = match;
-      // Note: The month is 0-indexed in the JavaScript Date constructor (0-11).
-      date = new Date(
-        Number(year),
-        Number(month) - 1,
-        Number(day),
-        Number(hour),
-        Number(minute),
-        Number(second)
-      );
-    } else {
-      // Otherwise, assume it's a standard format.
-      date = new Date(timeString);
-    }
-    // Check if the resulting date is valid before formatting.
+    const date = new Date(timeString);
     if (Number.isNaN(date.getTime())) {
       return "Invalid Date";
     }

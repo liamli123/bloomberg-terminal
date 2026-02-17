@@ -1,16 +1,16 @@
 /**
  * Market data refresh task
- * Fetches fresh data from Alpha Vantage and updates Redis
+ * Fetches fresh data from multiple providers and updates Redis
  */
 
-import { fetchAllMarketData } from "./alpha-vantage";
+import { fetchAllMarketData } from "./data-service";
 import { redis } from "./redis";
 import scheduler from "./scheduler";
 
 // Function to refresh market data from Alpha Vantage and store in Redis
 export async function refreshMarketData(): Promise<void> {
   try {
-    console.log("Starting market data refresh from Alpha Vantage...");
+    console.log("Starting market data refresh...");
 
     // Check if we already have data in Redis
     const existingData = await redis.get("market_data");
@@ -25,7 +25,7 @@ export async function refreshMarketData(): Promise<void> {
         marketData.americas.length + marketData.emea.length + marketData.asiaPacific.length;
 
       if (totalIndices < 5) {
-        throw new Error("Not enough data received from Alpha Vantage");
+        throw new Error("Not enough data received from providers");
       }
 
       // Add timestamp to data
@@ -64,7 +64,7 @@ function shouldRefreshData(data: { lastFullRefresh?: string }): boolean {
 // Register the task with the scheduler - refresh once every 24 hours
 scheduler.register(
   "market-data-refresh",
-  "Alpha Vantage Market Data Refresh",
+  "Market Data Refresh",
   24, // Run every 24 hours
   refreshMarketData
 );
